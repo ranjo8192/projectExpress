@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Product Management S/M : Get Product</title>
+	<style type="text/css">
+		.addProductSection{
+			margin-top: 150px;
+			
+		}
+	</style>
+</head>
+<body>
+	<center>
+	<div class="addProductSection" ng-controller="addProductFormCtrl">
+		<form action="/addproductRequest" method="GET">
+			<table>
+				<tr>
+					<td colspan="2"><center><label>Add Product Section</label></center></td>
+					
+				</tr>
+				<tr>
+					<td><label>Product category</label></td>
+					<td><input type="text" placeholder="Enter Category" name="productCategory" required></td>
+				</tr>
+				<tr>
+					<td><label>Product Manufactures</label></td>
+					<td><input type="text" placeholder="Enter manufacture" name="pruductManufacturer" required></td>
+				</tr>
+				<tr>
+					<td><label>Product Description</label></td>
+					<td><input type="text" ng-nodel="description" placeholder="Enter description" name="productDescription" required></td>
+				</tr>
+				<tr>
+					<td><label>Product Cost</label></td>
+					<td><input type="text" ng-model="pcost" placeholder="Enter product cost" name="productCost" required></td>
+				</tr>
+				<tr>
+					<td><label>Product Quantity</label></td>
+					<td><input type="text" ng-model="pquantity" placeholder="Enter quantity" name="productQuantity" required></td>
+				</tr>
+				<tr>
+					<td><label>Any otehr specifiacations</label></td>
+					<td><input type="text" ng-model="otherSpecification" placeholder="other specifications" name="productSpecification" required></td>
+				</tr>
+				<tr>
+					<td><button ng-click="add()">Add Product</button></td>
+					<td><button ng-click="reset()">Cancel</button></td>
+				</tr>
+			</table>
+		</form>
+	</div>
+	</center>
+</body>
+</html>
