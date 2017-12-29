@@ -152,19 +152,31 @@ app.get('/forgetpasswordrequest',function(req,res){
 			if(err){
 				throw err;
 			}
+
 			console.log(result);
-			console.log(result.length);
+			
+			//console.log(result.length);
 			if(result.length >= 1){
+
 				console.log("Your Username has matched");
-				res.redirect('/getusername');
+				
+				//res.redirect('/getusername');
+				//res.writeHead(200,{'content-Type':'text/html'});
+				res.send("Your User Name is: " + " " + " " + "Your Password is: " );
+				//res.end();
 			}
 			else{
 				console.log("User Name does exists. Please create account.");
 				res.redirect('/cretaeaccount');
+				
 				}
 			
 		});
 	});
+});
+
+app.get('/getusername',function(req,res){
+	res.sendFile(__dirname + "/" + "userGetRequest.html");
 });
 
 var server = app.listen(8080,function(req,res){
