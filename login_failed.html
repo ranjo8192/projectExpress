@@ -1,79 +1,88 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>Login Falied</title>
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<title>Login Falied</title>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 </head>
 <body>
-	<center>
-		<div class="login-page" style="display: block;">
-			<h1>Your login is failed...! </h1>
-			<h2>Please try to Re-login or forget your password or click to register with us</h2>
-			<form action = "/login" method = "GET" style="margin-top: 100px;">
-	         Username: <input type = "text" name = "userName" placeholder="Enter username" required>  <br><br>
-	         Password: <input type = "password" name = "password" placeholder="Enter password" required><br><br>
-	         <button type="submit">Login</button>
-	         <button type="submit" class="forgetpassword-button">Forget Password</button>
-	         <button type="submit" class="newregistration-button">Register</button>
-	         </form>
-	         
-      		
-		</div>
-		<div class="forget-password" style="display: none;">
-			<h1>Reset your password</h1>
-			<form action = "/forgetpassword" method = "GET" style="margin-top: 100px;">
-				<table>
-					<tr>
-					<td><label>Password:</label> </td>
-					<td><input type = "text" name = "userName" placeholder="New password" required></td>
-					</tr>
-					<tr>
-					<td>
-						<label>Re-Enter Password:</label> 
-					</td>
-					<td><input type = "password" name = "password" placeholder="Re-enter password" required></td>
-			         </tr>
-			         <!--<button type="submit">Login</button>
-			         <button type="submit">Forget Password</button>-->
-			         <tr>
-			         	<td></td>
-			         	<td><button type="submit">Save New Passwword</button></tr></td>
-			         	
-				</table>
-	         
-      		</form>
-      		<div class="forget-password-form" style="display: none;">
-			<h1>Retreive your password</h1>
-			<form action = "/forgetpasswordrequest" method = "GET" style="margin-top: 100px;">
-				<table>
-					<tr>
-					<td><label>Please Enter Your UserId</label> </td>
-					<td><input type = "mail" name = "userName" placeholder="New password" required></td>
-					</tr>
-					
-			         <!--<button type="submit">Login</button>
-			         <button type="submit">Forget Password</button>-->
-			         <tr>
-			         	<td></td>
-			         	<td><button type="submit">Retrieve Your Password</button></tr></td>
-			         	
-				</table>
-	         
-	      		</form>
-			</div>
-		<div class="new-registration"  style="display: none;">
-			<h1>New Registration</h1>
-			<form action = "/newregistration" method = "GET" style="margin-top: 100px;">
-	         Username: <input type = "text" name = "userName" placeholder="Enter username" required>  <br><br>
-	         Password: <input type = "password" name = "password" placeholder="Enter password" required><br><br>
-	         <!--<button type="submit">Login</button>
-	         <button type="submit">Forget Password</button>-->
-	         <button type="submit">Register</button>
-      		</form>
-		</div>
-	</center>
-	
-
+<center>
+	<!--------------------Login Form Start here-------------------------->
+  <div class="login-page" style="display: block;">
+    <h1>Your login is failed...! </h1>
+    <h2>Please try to Re-login or forget your password or click to register with us</h2>
+    <form action = "/login" method = "GET" style="margin-top: 100px;">
+      Username:
+      <input type = "text" name = "userName" placeholder="Enter username" required>
+      <br>
+      <br>
+      Password:
+      <input type = "password" name = "password" placeholder="Enter password" required>
+      <br>
+      <br>
+      <button type="submit">Login</button>
+      <button type="submit" class="forgetpassword-button">Forget Password</button>
+      <button type="submit" class="newregistration-button">Register</button>
+    </form>
+  </div>
+  <!--------------------Login Form End here-------------------------->
+  <!------------Forget Password Form Start here---------------------->
+  <div class="forget-password" style="display: none;">
+    <h1>Reset your password</h1>
+    <form action = "/resetPassword" method = "POST" style="margin-top: 100px;">
+      <table>
+        <tr>
+          <td><label>Enter Your Username:</label></td>
+          <td><input type = "text" name = "username" placeholder="New password" required></td>
+        </tr>
+        <tr>
+          <td><label>Password:</label></td>
+          <td><input type = "text" name = "password" placeholder="New password" required></td>
+        </tr>
+        <tr>
+          <td><label>Re-Enter Password:</label></td>
+          <td><input type = "password" name = "repassword" placeholder="Re-enter password" required></td>
+        </tr>
+        <tr>
+          <td></td>
+          <td><button type="submit">Save New Passwword</button>
+        </tr>
+          </td>
+      </table>
+    </form>
+  </div>
+  <!------------Forget Password Form End here---------------------->
+  <div class="forget-password-form" style="display: none;">
+    <h1>Retreive your password</h1>
+    <form action = "/forgetpasswordrequest" method = "GET" style="margin-top: 100px;">
+      <table>
+        <tr>
+          <td><label>Please Enter Your UserId</label></td>
+          <td><input type = "mail" name = "userName" placeholder="New password" required></td>
+        </tr>
+        <tr>
+          <td></td>
+          <td><button type="submit">Retrieve Your Password</button>
+        </tr>
+          </td>
+        
+      </table>
+    </form>
+  </div>
+  <div class="new-registration"  style="display: none;">
+    <h1>New Registration</h1>
+    <form action = "/userRegistration" method = "POST" style="margin-top: 100px;">
+      Username:
+      <input type = "text" name = "username" placeholder="Enter username" required>
+      <br>
+      <br>
+      Password:
+      <input type = "password" name = "password" placeholder="Enter password" required>
+      <br>
+      <br>
+      <button type="submit">Register</button>
+    </form>
+  </div>
+</center>
 </body>
 </html>
 <script type="text/javascript">

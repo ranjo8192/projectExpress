@@ -3,10 +3,10 @@ var express = require('express');
 var mysqlDbConnection = require('./mysqlDbConnection');
 var app = express();
 
-//bodyParser =require('body-parser'),
+bodyParser =require('body-parser'),
 
-//app.use(bodyParser.json());
-//app.use(bodyParser.urlencoded({ extended: true })); 
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true })); 
 
 
 
@@ -37,7 +37,7 @@ app.get('/login',function(req,res){
 				userName = req.query.userName;
 				password = req.query.password;
 
-				console.log("Username is:" + userName + " "+ "User password is :" + password);
+				//console.log("Username is:" + userName + " "+ "User password is :" + password);
 			//}
 			//console.log(response);
 			//res.redirect("/success");
@@ -47,7 +47,8 @@ app.get('/login',function(req,res){
 				throw err;
 			}
 			console.log("Connection with mysql is successful.");
-			var sql = "SELECT * FROM users where uname ='"+userName+"' &&  upassword ='"+password+"' ";
+			var sql = "SELECT * FROM users where uname ='" + userName + "' &&  upassword ='" + password + "' ;"
+			//console.log(sql);
 			con.query(sql,function(err,result,fields){
 				//console.log(result);
 				if(err){
@@ -61,7 +62,7 @@ app.get('/login',function(req,res){
 				res.redirect("/addproduct");
 				
 				}else{
-					console.log("You user name password not matched");
+					console.log("Your user name password not matched");
 					res.redirect('loginfailed');
 
 					}
@@ -146,7 +147,8 @@ app.get('/forgetpasswordrequest',function(req,res){
 			throw err;
 		}else
 		console.log('You have connected with mysql database for password retreive');
-		var sql = "select * from users where uname ='"+userName+"'";
+		var sql = "select * from users where uname ='" + userName + "' ";
+		console.log(sql);
 		
 		con.query(sql,function(err,result,fields){
 			if(err){
@@ -162,12 +164,12 @@ app.get('/forgetpasswordrequest',function(req,res){
 				
 				//res.redirect('/getusername');
 				//res.writeHead(200,{'content-Type':'text/html'});
-				res.send("Your User Name is: " + " " + " " + "Your Password is: " );
+				res.send( "Your User Name is: " + result[0].uname + " " + " " + "Your Password is: " + result[0].upassword );
 				//res.end();
 			}
 			else{
 				console.log("User Name does exists. Please create account.");
-				res.redirect('/cretaeaccount');
+				res.redirect('/registerHere');
 				
 				}
 			
@@ -178,6 +180,78 @@ app.get('/forgetpasswordrequest',function(req,res){
 app.get('/getusername',function(req,res){
 	res.sendFile(__dirname + "/" + "userGetRequest.html");
 });
+
+/**********************User Registration Start************************/
+
+app.get('/registerHere',function(req,res){
+	res.sendFile(__dirname + "/" + "registerHere.html");
+});
+
+app.post('/userRegistration', function(req,res){
+	res.setHeader('content-Type','text/html');
+
+	userName = req.body.username;
+	userpass = req.body.password;
+
+	var con = mysqlDbConnection.dbConnection();
+	con.connect(function(err){
+		if(err){
+			throw err;
+		}else{
+			console.log("Your connection is successful once again for user registration");
+			var sql = "INSERT INTO users(uname,upassword) values('" +userName+ "','" +userpass+ "');"
+			console.log(sql);
+			con.query(sql,function(err,result,fields){
+				if(err){
+					throw err;
+				}else{
+					console.log(result);
+					console.log(fields);
+					res.send('<html>'
+						    + '<h3> Hi ' + userName + " " +"Your Registration is successful !" + '</h3>'
+						    + '</html>');
+				}
+			});
+		}
+	});
+
+	//res.send("We are registering you, Your entries are as: " + userName + " " + userpass);
+});
+
+/***********************End User Registration************************/
+
+/***********************Start reset password section************************/
+app.post('/resetPassword',function(req,res){
+	res.setHeader('content-Type','text/html');
+
+	userName = req.body.username;
+	password = req.body.password;
+	rePassword = req.body.repassword;
+	res.send("Your user Name is :" + userName + " " + "Your pass is: " + password + " " + "Your Re-Enter password is :" + rePassword);
+	var con =  mysqlDbConnection.dbConnection();
+	con.connect(function(err){
+		if(err){
+			throw err;
+		}else{
+			console.log("Your connection with my SQL is successful, Now you can fire your queries from here!");
+			var sql = "SELECT uname from users where uname = '" +userName+ "' ;"
+			console.log(sql);
+			con.query(sql,function(err,result,fields){
+				if(err){
+					throw err;
+				}else{
+					console.log(result);
+					if(result.length >=1){
+						var sql = "UPDATE users set upassword ='" +password+ "' where uname ='" +userName+ "' ;"
+					}
+				}
+			});
+		}
+	});
+	
+});
+/***********************End reset password section**************************/
+
 
 var server = app.listen(8080,function(req,res){
 	console.log("Server is listening at http://localhost:8080/");
