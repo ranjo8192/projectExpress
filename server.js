@@ -17,7 +17,8 @@ var userSession;
 
 app.get('/' ,function(req,res){
 	userSession = req.session;
-	if(userSession.userName){
+
+	if(userSession.userName) {
 		res.redirect('/addproduct');
 	}else{
 		res.sendFile(__dirname + "/" + "login.html")
@@ -32,6 +33,46 @@ app.get('/dashboard',function(req,res){
 	res.sendFile(__dirname + "/" + "dashboard.html" )
 });
 
+app.get('/searchProduct',function(req,res){
+
+	var htmlStartSTring = "<html><body>";
+	
+	var htmlEndString = "</table></body></html>";
+
+	var htmlBodyString = "<table><tr><th>Product Name</th> <th>Product Description</th><th>Product price</th></tr>";
+	var productInfoString = "";
+	var con = mysqlDbConnection.dbConnection();
+	con.connect(function(err){
+		if(err){
+			throw err;
+		}else{
+			console.log("Mysql connection is successful for add product.!");
+			var sql = "select * from products";
+			console.log(sql);
+			con.query(sql,function(err,result,fields){
+				if(err){
+					throw err;
+				}else{
+					//console.log("Product Has been added successfully" + result.length);
+					var buffer = "";
+					for(var i=0; i<result.length;i++) {
+						productInfoString = "<tr><td>" + result[i].productCategory + "</td><td>" + result[i].productManufacturer + "</td><td>" + result[i].productCost + "</td></tr>";
+						buffer += productInfoString;
+						//console.log(i + "........ " + result[i].productCategory)
+					}
+					//console.log( ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>    " + buffer)
+					htmlString = htmlStartSTring + htmlBodyString + buffer + htmlEndString;
+					res.write(htmlString);
+				}
+			})
+		}
+	})
+
+	
+});
+
+
+
 app.get('/loginfailed',function(req,res){
 	res.sendFile(__dirname + "/" + "login_failed.html" )
 });
@@ -43,7 +84,7 @@ app.get('/login',function(req,res){
 			userSession = req.session;
 
 			//response = {
-				userSession.userName = req.query.userName;
+			    userName = req.query.userName;
 				password = req.query.password;
 
 				//console.log("Username is:" + userName + " "+ "User password is :" + password);
@@ -56,7 +97,7 @@ app.get('/login',function(req,res){
 				throw err;
 			}
 			console.log("Connection with mysql is successful.");
-			var sql = "SELECT * FROM users where uname ='" + userSession.userName + "' &&  upassword ='" + password + "' ;"
+			var sql = "SELECT * FROM users where uname ='" + userName + "' &&  upassword ='" + password + "' ;"
 			//console.log(sql);
 			con.query(sql,function(err,result,fields){
 				//console.log(result);
@@ -65,10 +106,11 @@ app.get('/login',function(req,res){
 				}
 				console.log("Query Executed successfully.!");
 				console.log(result);
-				if(result.length >= 1){
+				if(result.length == 1){
 				console.log("Hey your login is successfull.!");
 				console.log("You are redirected to the dashboard");
 				//res.send("Welcome " + userName);
+				userSession.userName = userName;
 				res.redirect("/addproduct");
 				
 				}else{
@@ -90,7 +132,7 @@ app.get('/logout' , function(req,res){
 			throw err;
 		}else{
 			console.log("Session is destroyed, You are redirected to the login page.");
-			res.redirect('/');
+			res.sendFile(__dirname + "/" + "login.html")
 		}
 	});
 
@@ -98,8 +140,10 @@ app.get('/logout' , function(req,res){
 /*****************************End User Logout*********************/
 
 
-app.get('/addproduct',function(req,res){
+app.get('/addproduct', function(req,res){
 	res.sendFile(__dirname + "/" + "addProduct.html" )
+	//var uname = "aaaaaaa";
+	//res.render(__dirname + '/addProduct.html',{uname:userSession.userName});
 
 });
 
@@ -163,7 +207,7 @@ app.get('/login_failed',function(req,res){
 });
 
 app.get('/forgetpasswordrequest',function(req,res){
-	res.setHeader('Content-Type','text/plain');
+	res.setHeader('Content-Type' , 'text/plain');
 	userName = req.query.userName;
 	
 	var con = mysqlDbConnection.dbConnection();
@@ -175,7 +219,7 @@ app.get('/forgetpasswordrequest',function(req,res){
 		var sql = "select * from users where uname ='" + userName + "' ";
 		console.log(sql);
 		
-		con.query(sql,function(err,result,fields){
+		con.query(sql,function(err, result, fields){
 			if(err){
 				throw err;
 			}
