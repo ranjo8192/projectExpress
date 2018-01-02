@@ -1,20 +1,28 @@
 var mysql = require('mysql');
 var express = require('express');
+var session = require('express-session');
 var mysqlDbConnection = require('./mysqlDbConnection');
 var app = express();
+
 
 bodyParser =require('body-parser'),
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true })); 
 
-
-
-
 app.use(express.static('public'));
+app.use(session({secret : 'ssshhh'}));
+
+var userSession;
 
 app.get('/' ,function(req,res){
-	res.sendFile(__dirname + "/" + "login.html")
+	userSession = req.session;
+	if(userSession.userName){
+		res.redirect('/addproduct');
+	}else{
+		res.sendFile(__dirname + "/" + "login.html")
+	}
+	
 });
 app.get('/success',function(req,res){
 	res.sendFile(__dirname + "/" + "success.html")
@@ -32,9 +40,10 @@ app.get('/loginfailed',function(req,res){
 
 app.get('/login',function(req,res){
 			// Prepare out put in JSON format
+			userSession = req.session;
 
 			//response = {
-				userName = req.query.userName;
+				userSession.userName = req.query.userName;
 				password = req.query.password;
 
 				//console.log("Username is:" + userName + " "+ "User password is :" + password);
@@ -47,7 +56,7 @@ app.get('/login',function(req,res){
 				throw err;
 			}
 			console.log("Connection with mysql is successful.");
-			var sql = "SELECT * FROM users where uname ='" + userName + "' &&  upassword ='" + password + "' ;"
+			var sql = "SELECT * FROM users where uname ='" + userSession.userName + "' &&  upassword ='" + password + "' ;"
 			//console.log(sql);
 			con.query(sql,function(err,result,fields){
 				//console.log(result);
@@ -59,6 +68,7 @@ app.get('/login',function(req,res){
 				if(result.length >= 1){
 				console.log("Hey your login is successfull.!");
 				console.log("You are redirected to the dashboard");
+				//res.send("Welcome " + userName);
 				res.redirect("/addproduct");
 				
 				}else{
@@ -72,6 +82,21 @@ app.get('/login',function(req,res){
 });
 
 /*****************************End user Login*******************/
+/*****************************Start user Logout*******************/
+app.get('/logout' , function(req,res){
+	userSession = req.session;
+	req.session.destroy(function(err){
+		if(err){
+			throw err;
+		}else{
+			console.log("Session is destroyed, You are redirected to the login page.");
+			res.redirect('/');
+		}
+	});
+
+});
+/*****************************End User Logout*********************/
+
 
 app.get('/addproduct',function(req,res){
 	res.sendFile(__dirname + "/" + "addProduct.html" )
@@ -227,14 +252,14 @@ app.post('/resetPassword',function(req,res){
 	userName = req.body.username;
 	password = req.body.password;
 	rePassword = req.body.repassword;
-	res.send("Your user Name is :" + userName + " " + "Your pass is: " + password + " " + "Your Re-Enter password is :" + rePassword);
+	console.log("Your user Name is :" + userName + " " + "Your pass is: " + password + " " + "Your Re-Enter password is :" + rePassword);
 	var con =  mysqlDbConnection.dbConnection();
 	con.connect(function(err){
 		if(err){
 			throw err;
 		}else{
 			console.log("Your connection with my SQL is successful, Now you can fire your queries from here!");
-			var sql = "SELECT uname from users where uname = '" +userName+ "' ;"
+			var sql = "SELECT * from users where uname = '" +userName+ "' ;"
 			console.log(sql);
 			con.query(sql,function(err,result,fields){
 				if(err){
@@ -243,6 +268,31 @@ app.post('/resetPassword',function(req,res){
 					console.log(result);
 					if(result.length >=1){
 						var sql = "UPDATE users set upassword ='" +password+ "' where uname ='" +userName+ "' ;"
+						console.log("Sql for update user Password: " + sql);
+						con.query(sql,function(err,result,fields){
+							if(err){
+								throw err;
+							}else{
+								console.log(result);
+								console.log(fields);
+								console.log("Your password has been updated successfully.!");
+								var sql = "Select * from users where uname = '" + userName + "';"
+								console.log(sql);
+								con.query(sql,function(err,result,fields){
+									if(err){
+										throw err;
+									}else{
+										console.log(result);
+										console.log(fields);
+										res.write("Hey your password has been updated successfully." + " " + "For the user name : " + userName + " " + "Your password is :" + result[0].upassword);
+									}
+								});
+								
+							}
+						});
+					}else{
+						console.log("User name does not exists");
+						res.redirect('/login_failed');
 					}
 				}
 			});
