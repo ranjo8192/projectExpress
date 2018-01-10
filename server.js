@@ -1,17 +1,26 @@
-var mysql = require('mysql');
-var express = require('express');
-var session = require('express-session');
+var mysql 			= require('mysql');
+var express 		= require('express');
+var session 		= require('express-session');
+var bodyParser 		= require('body-parser');
+//var expresslayouts	= require('express-ejs-layouts');
 var mysqlDbConnection = require('./mysqlDbConnection');
 var app = express();
 
+// route our app
+//var router = require('/app/routes');
+//app.use('/', router);
 
-bodyParser =require('body-parser'),
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true })); 
 
 app.use(express.static('public'));
 app.use(session({secret : 'ssshhh'}));
+
+//Use ejs and express layouts
+app.set('view engine', 'ejs');
+app.set('views','./views');
+//app.use(expresslayouts);
 
 var userSession;
 
@@ -30,7 +39,8 @@ app.get('/success',function(req,res){
 });
 
 app.get('/dashboard',function(req,res){
-	res.sendFile(__dirname + "/" + "dashboard.html" )
+	//res.sendFile(__dirname + "/" + "dashboard.ejs" )
+	 res.render("dashboard");
 });
 
 app.get('/searchProduct',function(req,res){
@@ -111,7 +121,10 @@ app.get('/login',function(req,res){
 				console.log("You are redirected to the dashboard");
 				//res.send("Welcome " + userName);
 				userSession.userName = userName;
-				res.redirect("/addproduct");
+				res.render('/addproduct', {
+					title: 'Dashboard',
+					user :	userSession.userName
+				});
 				
 				}else{
 					console.log("Your user name password not matched");
@@ -141,7 +154,7 @@ app.get('/logout' , function(req,res){
 
 
 app.get('/addproduct', function(req,res){
-	res.sendFile(__dirname + "/" + "addProduct.html" )
+	res.render('pages/addProduct');
 	//var uname = "aaaaaaa";
 	//res.render(__dirname + '/addProduct.html',{uname:userSession.userName});
 
