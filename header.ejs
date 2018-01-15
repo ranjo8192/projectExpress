@@ -1,0 +1,23 @@
+<div class="navbar navbar-default">
+<div class="header-top">
+<h2>Welcome <%= user %>!</h2>
+</div>
+<div class="col-xs-12 col-md-7 col-sm-12 col-sms-12">
+	<form action="/catalogsearch" method="post">
+	<div class="search-form" style="text-align: right;margin-right: 11%;">
+   		<input type="text" name="searchData" style="width: 18%;padding: 7px;">
+   		<button type="submit" title="Search"><span><span>Search</span></span>
+    </div>
+    </form>
+<div>
+<ul class="dashboard-link" style="list-style: none;">
+<li class="home-page"><a href="/">Home</a></li>
+<li class="admin-dashboard"><a href="/dashboard">Dashboard</a></li>
+<li class="add-product"><a href="/addProduct">Add Product</a></li>
+<li class="retreive-product"><a href="/retreiveProduct">Show Products</a></li>
+<li class="update-product"><a href="/updateProduct">Update Products</a></li>
+<li class="delete-product"><a href="/deleteProduct">Delete Products</a></li>
+<li class="search-product"><a href="/searchProduct">Search Products</a></li>
+<li class="dashboard-logout"><a href="/logout">Logout</a></li>
+</ul>
+</div>
